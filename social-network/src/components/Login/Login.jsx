@@ -22,7 +22,7 @@ const Login = () => {
         ? <LonginForm setLogged = {setIsLogged}></LonginForm>
         : <SingUpForm setLogged = {setIsLogged}></SingUpForm>
       }
-      <button onClick = { (e) => handleClick(e)}> {isLoggin ? "Sing Up":"Log In"} </button>
+      <button onClick = { (e) => handleClick(e)}> {isLoggin ? "Go to Sing Up":"Go to Log In"} </button>
       </>
     )    
   }
