@@ -28,6 +28,16 @@ const getToken = () =>{
 const getAnonymusUser = () =>{
     return {anonymusUsername:"Tyree14", anonymusPassword:"pPM_uJYeILgR2v4"}
 }
+
+const setUserDetails = (userDetails) => {
+    window.sessionStorage.setItem('userDetails', userDetails)
+}
+
+const getUserDetails = () =>{
+    const userDetails = window.sessionStorage.getItem("userDetails")
+    if(userDetails === 'undefined') return undefined
+    return JSON.parse(userDetails)
+}
 export default  {
     isLogged,
     getBackEnd,
@@ -35,5 +45,7 @@ export default  {
     getToken,
     getAnonymusUser,
     setUser,
-    getuser
+    getuser,
+    setUserDetails,
+    getUserDetails,
 }
