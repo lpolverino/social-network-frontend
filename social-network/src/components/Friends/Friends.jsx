@@ -73,7 +73,10 @@ const Friends = () => {
 		<>
 			<div>
 				<input type="text" name="searchBar" id="searchBar" value={searchBarText} onChange={e => setSearchBarText(e.target.value)} />
-				<button onClick={e => sendFollow(e)}>Follow</button>
+				{ followRequestPending
+					? <button onClick={e => sendFollow(e)} disabled>Follow</button>
+					: <button onClick={e => sendFollow(e)}>Follow</button>
+				}
 			</div>
 			<div>
 				{error && showError()}

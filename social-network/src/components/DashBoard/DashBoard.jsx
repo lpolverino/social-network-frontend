@@ -1,6 +1,7 @@
 import { createContext, useEffect, useState } from "react"
 import Header from "../Header/Header"
 import Friends from "../Friends/Friends"
+import PostDisplayer from "../PostsDisplayer/PostDisplayer"
 import utils from "../../utils"
 
 export const UserContext = createContext({
@@ -9,17 +10,17 @@ export const UserContext = createContext({
 })
 
 const DashBoard = () => {
-
+	const [user, setUser] = useState(null)
+	const [isLoading, setIsLoading] = useState(true)
+	const [error, setError] = useState(null)
+	
 	const [rendering, setRendering] = useState([
-		{ name:'Index', render:() => <></> },
+		{ name:'Index', render:() => <PostDisplayer></PostDisplayer> },
 		{name:'Friends', render:() => <Friends></Friends>},
 		{name:'Notifications', render: () => <></>},
 		{name:'Profile', render: () =><></>}
 	]) 
 	const [renderingIndex, setRenderingIndex] = useState(0)
-	const [user, setUser] = useState(null)
-	const [isLoading, setIsLoading] = useState(true)
-	const [error, setError] = useState(null)
 
 	useEffect( () => {
 		const getUser = async () =>{
