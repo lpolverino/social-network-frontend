@@ -15,9 +15,8 @@ const NewPost = ({updatePosts}) => {
     e.preventDefault()
     setSendingPost(true)
     try{
-      const backendUrl = utils.getBackEnd() + "/posts"
+      const backendUrl = utils.getBackEnd() + "/posts/" + user._id
       const newPost = {
-        author:user._id, 
         content:postContent
       }
       const response = await fetch(backendUrl, {
@@ -37,6 +36,7 @@ const NewPost = ({updatePosts}) => {
         return
       }
       newPost._id = responseData.postId
+      newPost.author = user.user_name
       updatePosts(prevState => [newPost].concat(prevState))
       setPostContent('')
     }
