@@ -1,7 +1,5 @@
 const isLogged = () =>{
     const login =  getToken()
-    console.log(login !== null && login !== undefined);
-    console.log(login);
     return login !== null && login !== undefined
 }
 

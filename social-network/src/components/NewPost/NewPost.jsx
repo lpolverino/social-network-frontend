@@ -35,9 +35,9 @@ const NewPost = ({updatePosts}) => {
         setErrors(responseData.errors)
         return
       }
-      newPost._id = responseData.postId
-      newPost.author = user.user_name
-      updatePosts(prevState => [newPost].concat(prevState))
+      const savedPost = responseData.post
+      savedPost.author_name = responseData.post_author
+      updatePosts(savedPost)
       setPostContent('')
     }
     catch(e){
