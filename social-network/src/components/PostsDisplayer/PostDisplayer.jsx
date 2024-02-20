@@ -1,3 +1,4 @@
+import { socket } from "../../socket";
 import utils from "../../utils";
 import NewComment from "../NewComment/NewComment";
 import NewPost from "../NewPost/NewPost"
@@ -14,6 +15,8 @@ const PostDisplayer = () => {
       postId,
       newLikes,
     })
+    const post = posts.find(el => el._id = postId)
+    if(post.likes.total < newLikes.total) socket.emit("notify")
   }
   const addNewPost = (newPost) => {
     dispatch({
@@ -28,6 +31,7 @@ const PostDisplayer = () => {
       postId,
       commentId,
     })
+    socket.emit("notify")
   }
 
   const sendLike = async (e, postId) => {

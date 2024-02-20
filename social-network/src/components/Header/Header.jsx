@@ -4,7 +4,7 @@ const Header = ({ setRenderingIndex, contents}) => {
   
     return (
     <div>
-        {contents.map( (content,index) => <div key={content} onClick={() => setRenderingIndex(index)} > {content} </div>)}
+        {contents.map( (content,index) => <div key={content.content} onClick={() => setRenderingIndex(index)} > {content.content} </div>)}
     </div>
   )
 }
@@ -12,7 +12,10 @@ const Header = ({ setRenderingIndex, contents}) => {
 Header.propTypes = {
     setRenderingIndex: PropTypes.func,
     contents: PropTypes.arrayOf(
-        PropTypes.string
+        PropTypes.shape({
+            content:PropTypes.string.isRequired,
+            alert: PropTypes.bool
+        })
     )
 }
 

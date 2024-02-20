@@ -10,7 +10,7 @@ const Friends = () => {
 	const [error,setError] = useState(null)
 
 
-	const {user, updateUser} = useContext(UserContext)
+	const {user, updateUser, socket} = useContext(UserContext)
 
 	const sendFollow = async (e) => {
 		e.preventDefault()
@@ -39,6 +39,8 @@ const Friends = () => {
 				following : user.following.concat([responseData.followedUser])
 			}
 			updateUser(newUser)
+
+			socket.emit("notify",{followId:responseData.followedUser._id})
 		}
 		catch(e){
 			console.log(e);

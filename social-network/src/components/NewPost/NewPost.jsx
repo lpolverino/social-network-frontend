@@ -22,7 +22,7 @@ const NewPost = ({updatePosts}) => {
       const response = await fetch(backendUrl, {
         headers:{
 					'Authorization':`Bearer ${utils.getToken()}`,
-					'Accept':'application/json',
+          'Accept':'application/json',
 					'Content-type':'application/json',
 				},
 				method:"POST",

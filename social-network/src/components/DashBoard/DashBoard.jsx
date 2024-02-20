@@ -2,12 +2,14 @@ import { createContext, useEffect, useState } from "react"
 import Header from "../Header/Header"
 import Friends from "../Friends/Friends"
 import PostDisplayer from "../PostsDisplayer/PostDisplayer"
+import Notification from "../Notification/Notification"
 import utils from "../../utils"
 import {socket} from "../../socket"
 
 export const UserContext = createContext({
 	user:null,
 	updateUser:null,
+	socket: null
 })
 
 const DashBoard = () => {
@@ -18,7 +20,7 @@ const DashBoard = () => {
 	const [rendering, setRendering] = useState([
 		{ name:'Index', render:() => <PostDisplayer></PostDisplayer> },
 		{name:'Friends', render:() => <Friends></Friends>},
-		{name:'Notifications', render: () => <></>},
+		{name:'Notification', render:() => <Notification></Notification>},
 		{name:'Profile', render: () =><></>}
 	]) 
 	const [renderingIndex, setRenderingIndex] = useState(0)
@@ -66,7 +68,7 @@ const DashBoard = () => {
 	
 	useEffect( () => {
 		socket.on("notification", (data) => {
-			alert(data.message)
+			alert(data)
 		})
 	}, [socket])
 	
@@ -82,6 +84,8 @@ const DashBoard = () => {
     socket.on('connect', onConnect);
     socket.on('disconnect', onDisconnect);
 
+		socket.emit("username",utils.getuser())
+
     return () => {
       socket.off('connect', onConnect);
       socket.off('disconnect', onDisconnect);
@@ -90,17 +94,27 @@ const DashBoard = () => {
 
 	const showErrors = () => {}
 	const showContent = () =>{
-		
+
 		return (
-			<UserContext.Provider value={{user:user, updateUser:setUser}}>
+			<UserContext.Provider value={{user:user, updateUser:setUser, socket:socket}}>
 				{rendering[renderingIndex].render()}
 			</UserContext.Provider>
 		)
 	}
+
+	const sections = rendering.map( el => {
+		const sectionToRender = {
+			content:el.name
+		}
+		if(el.name === "Notification"){	
+			sectionToRender.alert =  user!== null ? user.notifications.unread : false
+		}
+		return sectionToRender
+	});
+
 	return (
     <div>
-				<button onClick={(e) => {e.preventDefault(), socket.emit("ping")}}> Ping</button>
-        <Header setRenderingIndex = {setRenderingIndex} contents = {rendering.map(element => element.name)} ></Header>
+        <Header setRenderingIndex = {setRenderingIndex} contents = {sections} ></Header>
 				{error && showErrors()}
 				{!isLoading && !error  && showContent()}
     </div>
