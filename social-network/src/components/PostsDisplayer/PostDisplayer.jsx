@@ -1,13 +1,13 @@
 import { socket } from "../../socket";
 import utils from "../../utils";
-import NewComment from "../NewComment/NewComment";
 import NewPost from "../NewPost/NewPost"
-import { useReducer, useState } from "react";
+import Post from "../Post/Post";
+
+import { useEffect, useReducer, useState } from "react";
 
 const PostDisplayer = () => {
   const [posts, dispatch] = useReducer(postReducer,[])
-  const [likenRequestPending, setLikeRequestPending] = useState(false)
-  const [errors, setErrors] = useState(null)
+  const [isLoading, setIsLoading] = useState(true)
 
   const toggleLike = (postId, newLikes) => {
     dispatch({
@@ -16,7 +16,7 @@ const PostDisplayer = () => {
       newLikes,
     })
     const post = posts.find(el => el._id = postId)
-    if(post.likes.total < newLikes.total) socket.emit("notify")
+    if(post.likes.total < newLikes.total) socket.emit("notify", post.author._id)
   }
   const addNewPost = (newPost) => {
     dispatch({
@@ -24,77 +24,62 @@ const PostDisplayer = () => {
       newPost
     })
   }
-
   const addComment = (postId, commentId) => {
     dispatch({
       type:"comment",
       postId,
       commentId,
     })
-    socket.emit("notify")
+
+    const post = posts.find(el => el._id= postId)
+    socket.emit("notify",post.author._id)
+  }
+    const postHandlers = {
+    toggleLike,
+    addNewPost,
+    addComment,
   }
 
-  const sendLike = async (e, postId) => {
-    e.preventDefault()
-    setLikeRequestPending(true)
-    const backendUrl = utils.getBackEnd() +"/posts/" + postId + "/likes/" + utils.getuser()
-    try {
-      const response = await fetch(backendUrl,{
-        headers:{
-					'Authorization':`Bearer ${utils.getToken()}`,
-					'Accept':'application/json',
-					'Content-type':'application/json',
-        },
-        method: "POST",
-      })
-      const responseData = await response.json();
-      if(!response.ok){
-        setErrors(response.errors.msg)
-      }
-      toggleLike(postId, responseData.newLikes)
-    }
-    catch(e){
-      console.log(e);
-      setErrors(e);
-    }
-    finally{
-      setLikeRequestPending(false)
-    }
-  }
-
+  useEffect( () => {
+      const getData = async () => {
   
-  const createPost = (post) => {
-    const commentsToShow = [... new Set(post.comments)]
-    return (
-      <>
-      <p> By: {post.author_name} </p>
-      <p> {post.content} </p>
-      {likenRequestPending
-        ? <button disabled> likes: {post.likes.total}</button>
-        : <button onClick={(e) => sendLike (e,post._id) }> likes: {post.likes.total}</button>
-      }
-      {/*The comments are yot to be rendered correctly, this is why they dont have a unique key */}
-      <ul> Comments
-        <NewComment postId ={post._id} addComment={(commentId) => addComment(post._id,commentId)}></NewComment>
-        {
-          commentsToShow.map(comment => <li key={comment}> {comment} </li>)
+        const backendUrl = utils.getBackEnd() + "/users/index"
+        try{
+          const response = await fetch(backendUrl, {
+            headers:{
+              'Accept':"application/json",
+              'Authorization': `Bearer ${utils.getToken()}`
+            },
+            method:"GET"
+          })
+          const responseData = await response.json()
+  
+          if(!response.ok) throw new Error(`the was an HTTP error : ${response.status} ${responseData.error.message}`)
+          
+          dispatch({
+            type:"initial",
+            posts: responseData.posts
+          })
         }
-      </ul>
-      </>
-    )
-  }
+        catch(e){
+          console.log(e);
+        }
+        finally{
+          setIsLoading(false)
+        }
   
-  const showErrors = () => {
-    return <h2> Error {errors}</h2>
-  }
+      }
+      getData()
+    },
+  []);
+
 
   return (
     <div>
-      {errors && showErrors()}
       <NewPost updatePosts={addNewPost}></NewPost>
       <div>
         <ul>
-          {posts.map(post => <li key={post._id}>{createPost(post)}</li>)}
+          {!isLoading && posts.map(post => <li key={post._id}><Post post={post} postHandlers={postHandlers}></Post></li>)}
         </ul>
       </div>
     </div>
@@ -103,6 +88,9 @@ const PostDisplayer = () => {
 
 const postReducer = (posts, action) => {
   switch(action.type){
+    case "initial" : {
+      return action.posts
+    }
     case "like" : {
       return posts.map(post => {
         return (post._id === action.postId) 

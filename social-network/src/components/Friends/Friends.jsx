@@ -40,7 +40,7 @@ const Friends = () => {
 			}
 			updateUser(newUser)
 
-			socket.emit("notify",{followId:responseData.followedUser._id})
+			socket.emit("notify",responseData.followedUser._id)
 		}
 		catch(e){
 			console.log(e);
