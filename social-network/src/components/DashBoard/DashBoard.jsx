@@ -2,6 +2,7 @@ import { createContext, useEffect, useState } from "react"
 import Header from "../Header/Header"
 import Friends from "../Friends/Friends"
 import PostDisplayer from "../PostsDisplayer/PostDisplayer"
+import Profile from "../Profile/Profile"
 import Notification from "../Notification/Notification"
 import utils from "../../utils"
 import {socket} from "../../socket"
@@ -21,7 +22,7 @@ const DashBoard = () => {
 		{ name:'Index', render:() => <PostDisplayer></PostDisplayer> },
 		{name:'Friends', render:() => <Friends></Friends>},
 		{name:'Notification', render:() => <Notification></Notification>},
-		{name:'Profile', render: () =><></>}
+		{name:'Profile', render: () =><Profile></Profile>}
 	]) 
 	const [renderingIndex, setRenderingIndex] = useState(0)
 	const [isConnected ,setIsConnected] = useState(socket.connected)
