@@ -1,6 +1,7 @@
 import { useContext, useState } from "react"
 import { UserContext } from "../DashBoard/DashBoard"
 import utils from "../../utils"
+import { NavLink } from "react-router-dom"
 
 const Friends = () => {
 
@@ -54,13 +55,43 @@ const Friends = () => {
 		return <button onClick={() => setIsShowingFollowing(value)}> {text} </button>
 	}
 
-	
 	const showUsers = (buttonText, userList) => {
 
 		return (<>
 			{ createButton(buttonText, !isShowingFollowing) }
 			<ul>
 				{userList.map(user => <li key={user._id}> {user.username} </li>)}
+			</ul>
+		</>)
+	}
+
+	const showPendings = () =>{
+		const following = user.following
+		const followers = user.followers
+		
+		const difference = (a,b) => {
+			return a.filter(element => ! b.indexOf(element) !== -1 )
+		}
+
+		const pending =  Array.from(difference(followers,following))
+		console.log(pending);
+		
+		const createPendingUser = (pendingUser) =>{
+			return (<li key={pendingUser._id}>
+				<p>
+					<NavLink to={"/profile/"+pendingUser._id}> 
+						{pendingUser.username}
+					</NavLink>
+				</p>
+				<button> Accept </button>
+				<button> Ignore </button>
+			</li>)
+		}
+		
+		return (<>
+			<h2> Pending</h2>
+			<ul>
+				{pending.map(pendingUser => createPendingUser(pendingUser))}
 			</ul>
 		</>)
 	}
@@ -82,6 +113,8 @@ const Friends = () => {
 			</div>
 			<div>
 				{error && showError()}
+				{showPendings()}
+				<h2>{isShowingFollowing? "Following": "Followers"}</h2>
 				{ isShowingFollowing 
 					?showUsers("Followers", user.following)
 					:showUsers("Following", user.followers)

@@ -45,16 +45,22 @@ const ProfileInfo = ({userData, isCurrentUser}) => {
     </>
   }
 
-  console.log(user);
+  const sortByDate = (post) => {
+    const postCopy = post
+    return postCopy.sort((a,b) => {
+      return new Date(b.date) - new Date (a.date)
+    })
+  }
+
   const showUser = () => {
     return (<>
       <h1>{user.user_name}</h1>
       {renderImage()}
-      <p> About:{user.about} </p>
-      <p> born in {user.birth_date}</p>
+      <p>About:{user.about} </p>
+      <p>Born in {user.birth_date}</p>
       <p>Since {user.sing_date}</p>
       <h2> Post </h2>
-      <PostDisplayer userPost={posts}></PostDisplayer>
+      <PostDisplayer userPost={sortByDate(posts)}></PostDisplayer>
     </>)
   }
 

@@ -74,7 +74,6 @@ const PostDisplayer = ({userPost}) => {
     },
   [userPost]);
 
-
   return (
     <div>
       {!userPost && <NewPost updatePosts={addNewPost}></NewPost>}
@@ -87,7 +86,7 @@ const PostDisplayer = ({userPost}) => {
   )
 }
 
-Post.propTypes = {
+PostDisplayer.propTypes = {
   userPost: PropType.arrayOf(PropType.object)
 }
 
