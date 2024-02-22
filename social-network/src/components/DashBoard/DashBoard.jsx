@@ -6,6 +6,7 @@ import Profile from "../Profile/Profile"
 import Notification from "../Notification/Notification"
 import utils from "../../utils"
 import {socket} from "../../socket"
+import { Navigate } from "react-router-dom"
 
 export const UserContext = createContext({
 	user:null,
@@ -22,7 +23,7 @@ const DashBoard = () => {
 		{ name:'Index', render:() => <PostDisplayer></PostDisplayer> },
 		{name:'Friends', render:() => <Friends></Friends>},
 		{name:'Notification', render:() => <Notification></Notification>},
-		{name:'Profile', render: () =><Profile></Profile>}
+		{name:'Profile', render: () =><Navigate to={"/profile/"+utils.getuser()} replace={true}></Navigate>}
 	]) 
 	const [renderingIndex, setRenderingIndex] = useState(0)
 	const [isConnected ,setIsConnected] = useState(socket.connected)

@@ -2,6 +2,7 @@ import { useState } from "react"
 import utils from "../../utils"
 import PropTypes from "prop-types"
 import Comments from "../Comments/Comments"
+import { NavLink } from "react-router-dom"
 
 const Post = ({post, postHandlers}) => {
   const [isLikeRequestPending , setIsLikeRequestPending] = useState(false)
@@ -49,7 +50,7 @@ const Post = ({post, postHandlers}) => {
    
    return (
    <> 
-      <p> By: {post.author.user_name} </p>
+      <NavLink to={"/profile/"+post.author._id}>By: {post.author.user_name} </NavLink>
       <p> {post.content} </p>
       {isLikeRequestPending
         ? <button disabled> likes: {post.likes.total}</button>

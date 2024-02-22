@@ -2,12 +2,13 @@ import { socket } from "../../socket";
 import utils from "../../utils";
 import NewPost from "../NewPost/NewPost"
 import Post from "../Post/Post";
+import PropType from "prop-types"
 
 import { useEffect, useReducer, useState } from "react";
 
-const PostDisplayer = () => {
-  const [posts, dispatch] = useReducer(postReducer,[])
-  const [isLoading, setIsLoading] = useState(true)
+const PostDisplayer = ({userPost}) => {
+  const [posts, dispatch] = useReducer(postReducer, userPost ??[])
+  const [isLoading, setIsLoading] = useState(userPost === undefined)
 
   const toggleLike = (postId, newLikes) => {
     dispatch({
@@ -69,14 +70,14 @@ const PostDisplayer = () => {
         }
   
       }
-      getData()
+      if (userPost === undefined) getData()
     },
-  []);
+  [userPost]);
 
 
   return (
     <div>
-      <NewPost updatePosts={addNewPost}></NewPost>
+      {!userPost && <NewPost updatePosts={addNewPost}></NewPost>}
       <div>
         <ul>
           {!isLoading && posts.map(post => <li key={post._id}><Post post={post} postHandlers={postHandlers}></Post></li>)}
@@ -84,6 +85,10 @@ const PostDisplayer = () => {
       </div>
     </div>
   )
+}
+
+Post.propTypes = {
+  userPost: PropType.arrayOf(PropType.object)
 }
 
 const postReducer = (posts, action) => {
