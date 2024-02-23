@@ -47,7 +47,6 @@ const LonginForm = ({setLogged}) => {
       height=700`
     )
     window.addEventListener("message", (event) =>{
-      console.log("received data");
       if(event.origin === utils.getBackEnd()){
         if(event.data){
           setLogged(event.data)

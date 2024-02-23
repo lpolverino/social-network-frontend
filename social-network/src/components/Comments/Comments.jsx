@@ -3,7 +3,7 @@ import NewComment from '../NewComment/NewComment'
 import PropTypes from 'prop-types';
 import { ApiContext } from '../../main';
 
-const Comments = ({postId, addComment}) => {
+const Comments = ({postId, addComment, newComments = [] }) => {
 
   const [isLoading, setIsLoading] = useState(true)
   const [errors, setErrors] = useState(null)
@@ -31,15 +31,29 @@ const Comments = ({postId, addComment}) => {
     getData()
   },[postId,api])
 
+  const createComment = (comment) => {
+    return (
+      <>
+        <p>{comment.author? comment.author.user_name:"Anonimus"}</p>
+        <p>{comment.comment}</p>
+      </>
+      )
+  }
+
+  const createComments = (comments) => {
+    return (
+      <>
+      {!isLoading && !errors && comments.map(comment => <li key={comment._id}>{createComment(comment)}</li>)}
+      </>
+    )
+  }
+
   return (
     <div>Comments
         <NewComment postId ={postId} addComment={(commentId) => addComment(postId, commentId)}></NewComment>
-        <ul>{
-          !isLoading && !errors && comments.map(comment => <li key={comment._id}>
-            <p>{comment.author? comment.author.user_name:"Anonimus"}</p>
-            <p>{comment.comment}</p>
-            </li>)
-        }
+        <ul>
+          { createComments(newComments) }
+          { createComments(comments) }
         </ul>
     </div>
   )
@@ -48,6 +62,7 @@ const Comments = ({postId, addComment}) => {
 Comments.propTypes = {
   postId:PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
   addComment:PropTypes.func,
+  newComments: PropTypes.array,
 }
 
 export default Comments

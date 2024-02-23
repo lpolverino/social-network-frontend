@@ -16,7 +16,17 @@ const NewComment = ({postId, addComment}) => {
     try{
       const backendUrl = "/posts/" + postId +"/comments/" + utils.getuser()
       const responseData = await api.postToBackend(backendUrl,{comment})
-      addComment(responseData.comment._id)
+      console.log(responseData);
+      const commentToAdd = {
+        _id: responseData.comment._id,
+        comment,
+        author:{
+          _id:responseData.comment.author,
+          user_name:utils.getUserDetails().user_name
+        }
+      }
+      console.log(commentToAdd);
+      addComment(commentToAdd)
     }
     catch(e){
       console.log(e);

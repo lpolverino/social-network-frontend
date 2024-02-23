@@ -32,11 +32,10 @@ const Post = ({post, postHandlers}) => {
   const showComments = () => {
     return (
       <>
-      <Comments postId={post._id} addComment={postHandlers.addComment}></Comments>
+      <Comments postId={post._id} addComment={postHandlers.addComment} newComments = {post.comments.filter(comment => comment.author !== undefined)}></Comments>
       </>
     )
   }
-
 
   const createPost = () => {
    

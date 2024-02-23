@@ -27,14 +27,14 @@ const PostDisplayer = ({userPost}) => {
       newPost
     })
   }
-  const addComment = (postId, commentId) => {
+  const addComment = (postId,comment) => {
     dispatch({
       type:"comment",
       postId,
-      commentId,
+      comment,
     })
 
-    const post = posts.find(el => el._id= postId)
+    const post = posts.find(el => el._id = postId)
     socket.emit("notify",post.author._id)
   }
     const postHandlers = {
@@ -97,12 +97,14 @@ const postReducer = (posts, action) => {
     }
     case "add": return [action.newPost].concat(posts)
     case "comment": {
-      console.log(`adding comment ${action.commentId} to post ${action.postId}`);
-      return posts.map(post => {
+      console.log(`adding comment ${action.comment._id} to post ${action.postId}`);
+      const newComments = posts.map(post => {
         return (post._id === action.postId)
-        ?Object.assign(post, {comments:post.comments.concat([action.commentId])})
+        ?{...post, comments:post.comments.concat([action.comment])}
         :post
       })
+      console.log(newComments);
+      return newComments
     }
     default: throw new Error(`Dispatch action ${action.type} not found`)
   }
