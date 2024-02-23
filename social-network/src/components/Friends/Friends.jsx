@@ -1,8 +1,8 @@
 import { useContext, useState } from "react"
 import { UserContext } from "../DashBoard/DashBoard"
 import utils from "../../utils"
+import apiRequest  from "../../apiRequest"
 import { NavLink } from "react-router-dom"
-import { ApiContext } from "../../main"
 
 const Friends = () => {
 
@@ -12,14 +12,13 @@ const Friends = () => {
 	const [error,setError] = useState(null)
 
 	const {user, updateUser, socket} = useContext(UserContext)
-	const {api} = useContext(ApiContext)
 
 	const sendFollow = async (e) => {
 		e.preventDefault()
 		setFollowRequestPending(true)
 		const backendUrl = "/users/" + utils.getuser() +"/follow"
 		try{
-			const responseData = await api.postToBackend(backendUrl,{username:searchBarText})
+			const responseData = await apiRequest.postToBackend(backendUrl,{username:searchBarText})
 
 			const newUser = {
 				...user,

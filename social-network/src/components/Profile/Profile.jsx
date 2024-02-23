@@ -1,8 +1,8 @@
 import { NavLink, useParams } from "react-router-dom"
-import { useContext, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import ProfileInfo from "../ProfileInfo/ProfileInfo"
 import utils from "../../utils"
-import { ApiContext } from "../../main"
+import apiRequest from "../../apiRequest"
 
 const Profile = () => {
   
@@ -11,14 +11,13 @@ const Profile = () => {
   const [errors, setErrors] = useState(null)
   const [userData, setUserData] = useState(null)
   
-  const {api} = useContext(ApiContext)
 
    useEffect( () => {
     const getData = async () => {
       const userId = params.userId
       try{
           const userBackEndUrl = "/users/" + userId + "/profile"
-          const userResponseData = await api.getFromBackend(userBackEndUrl)
+          const userResponseData = await apiRequest.getFromBackend(userBackEndUrl)
           setUserData(userResponseData)
       }
       catch(e){
@@ -31,7 +30,7 @@ const Profile = () => {
     }
 
     getData()
-  },[ api, params])
+  },[params])
 
   return (
     <div>

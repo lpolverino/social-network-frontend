@@ -1,33 +1,23 @@
-import React, { createContext } from 'react'
+import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './components/App/App.jsx'
 import Login from './components/Login/Login.jsx'
 import Profile from './components/Profile/Profile.jsx'
 import './index.css'
 import { createBrowserRouter,RouterProvider} from 'react-router-dom';
-import apiRequestHandler from './apiRequest.js'
-
-
-export const ApiContext = createContext(null)
 
 const router = createBrowserRouter([
   {
     path: "login",
-    element:<ApiContext.Provider value={{api:apiRequestHandler()}}>
-              <Login />
-            </ApiContext.Provider> 
+    element: <Login />
   },
   {
     path: "/",
-    element: <ApiContext.Provider value = {{api:apiRequestHandler()}}>
-              <App />
-            </ApiContext.Provider>
+    element:<App />
   },
   {
     path: "profile/:userId",
-    element:<ApiContext.Provider value ={{api:apiRequestHandler()}}>
-              <Profile></Profile>
-            </ApiContext.Provider>
+    element:<Profile></Profile>
   },
 
 ]);

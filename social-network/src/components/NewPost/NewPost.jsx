@@ -1,7 +1,7 @@
 import { useContext, useState } from "react"
 import { UserContext } from "../DashBoard/DashBoard"
 import PropTypes from 'prop-types';
-import { ApiContext } from "../../main";
+import apiRequest from "../../apiRequest";
 
 const NewPost = ({updatePosts}) => {
   
@@ -10,7 +10,6 @@ const NewPost = ({updatePosts}) => {
   const [errors, setErrors] = useState(null)
 
   const {user} = useContext(UserContext)
-  const {api} = useContext(ApiContext)
 
   const sendPost = async (e) => {
     e.preventDefault()
@@ -20,7 +19,7 @@ const NewPost = ({updatePosts}) => {
       const newPost = {
         content:postContent
       }
-      const responseData = await api.postToBackend(backendUrl, newPost)
+      const responseData = await apiRequest.postToBackend(backendUrl, newPost)
       const savedPost = responseData.post
       savedPost.author = {
         _id: responseData.post.author._id,

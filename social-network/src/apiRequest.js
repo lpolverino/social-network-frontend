@@ -1,15 +1,13 @@
 import utils from "./utils"
 
-const apiRequestHandler = () => {
-
-  const backend = utils.getBackEnd()
-  const headers = {
-    'Accept': 'application/json',
-    'Content-Type':'application/json'
-  }
 
   const sendRequest = async (route, method="GET", body, auhtorizationNeedy=false) => {
-
+    
+      const headers = {
+        'Accept': 'application/json',
+        'Content-Type':'application/json'
+      }
+    
       const requestHeaders = auhtorizationNeedy 
         ? {...headers, 'Authorization': `Bearer ${utils.getToken()}`}
         : headers
@@ -18,7 +16,7 @@ const apiRequestHandler = () => {
       ? {headers: requestHeaders, method, body:JSON.stringify(body)}
       : {headers: requestHeaders, method, }
 
-      const url = backend + route
+      const url = utils.getBackEnd() + route
     try{
 
       const response = await fetch(url, requestparams)
@@ -106,13 +104,10 @@ const apiRequestHandler = () => {
     }
   }
 
-  return {
+export default    {   
       getFromBackend,
       postToBackend,
       postLogin,
       postSignUp,
       putToBackend,
     }  
-}    
-
-export default apiRequestHandler

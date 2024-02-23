@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types'; 
-import { useContext, useState } from 'react';
+import { useState } from 'react';
 import utils from '../../utils';
-import { ApiContext } from '../../main';
+import apiRequest from "../../apiRequest"
 
 const LonginForm = ({setLogged}) => {
   
@@ -10,13 +10,12 @@ const LonginForm = ({setLogged}) => {
   const [pendingRequest, setPendingRequest] = useState(false)
   const [errors, setErrors] = useState(null)
 
-  const {api} = useContext(ApiContext)
 
   const sendLogInRequest =  async (username, password) =>{
 
     setPendingRequest(true)
     try{
-      const loginUserData = await api.postLogin({username, password})
+      const loginUserData = await apiRequest.postLogin({username, password})
       setLogged(loginUserData)
     }
     catch(e){

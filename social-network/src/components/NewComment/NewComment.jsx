@@ -1,21 +1,19 @@
-import { useContext, useState } from "react"
+import { useState } from "react"
 import utils from "../../utils"
 import PropTypes from 'prop-types';
-import { ApiContext } from "../../main";
+import apiRequest from "../../apiRequest"
 
 const NewComment = ({postId, addComment}) => {
   const [comment,setComment] = useState('')
   const [requestPending,setRequestPending] = useState(false)
   const [errors, setErrors] = useState(null)
 
-  const {api} = useContext(ApiContext)
-
   const handleCommentSumbit = async (e) => {
     e.preventDefault()
     setRequestPending(true)
     try{
       const backendUrl = "/posts/" + postId +"/comments/" + utils.getuser()
-      const responseData = await api.postToBackend(backendUrl,{comment})
+      const responseData = await apiRequest.postToBackend(backendUrl,{comment})
       console.log(responseData);
       const commentToAdd = {
         _id: responseData.comment._id,

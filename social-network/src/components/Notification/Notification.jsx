@@ -3,12 +3,11 @@ import PropTypes from 'prop-types';
 import { useContext, useEffect, useState } from "react";
 import utils from "../../utils";
 import { UserContext } from "../DashBoard/DashBoard";
-import { ApiContext } from "../../main";
+import apiRequest from "../../apiRequest";
 
 const Notification = () => {  
 
   const {user} = useContext(UserContext)
-  const {api} = useContext(ApiContext)
 
   const [error, setError] = useState(null)
   
@@ -21,7 +20,7 @@ const Notification = () => {
     const clearNotifications = async () => {
       const backendUrl = "/users/" +utils.getuser() + "/notifications"
       try{
-        await api.putToBackend(backendUrl)  
+        await apiRequest.putToBackend(backendUrl)  
       }
       catch(e){
         console.log(e);
@@ -29,7 +28,7 @@ const Notification = () => {
       }
     }
     clearNotifications()
-  },[api,user])
+  },[user])
 
   const showError = () => {
     return <p> There was an Http error : {error}</p>

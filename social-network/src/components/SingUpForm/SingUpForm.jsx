@@ -1,6 +1,6 @@
-import { useContext, useState } from "react"
+import { useState } from "react"
 import PropTypes from 'prop-types'; 
-import { ApiContext } from "../../main";
+import apiRequest from "../../apiRequest";
 
 const SingUpForm = ({setLogged}) => {
 
@@ -11,7 +11,6 @@ const SingUpForm = ({setLogged}) => {
 	const [email, setEmail] = useState('')
 	const [errors, setErrors] = useState(null)
 
-	const {api} = useContext(ApiContext)
 	
 	const handleSubmit = async (e) =>{
 		e.preventDefault()
@@ -22,7 +21,7 @@ const SingUpForm = ({setLogged}) => {
 		}
 		setRquestPending(true)
 		try{
-			const singUpResponseData = await api.postSignUp({username,password,email})
+			const singUpResponseData = await apiRequest.postSignUp({username,password,email})
 			setLogged(singUpResponseData)
 		}
 		catch(e){

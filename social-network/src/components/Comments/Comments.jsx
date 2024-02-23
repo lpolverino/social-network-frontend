@@ -1,7 +1,9 @@
-import { useContext, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import NewComment from '../NewComment/NewComment'
 import PropTypes from 'prop-types';
-import { ApiContext } from '../../main';
+import { NavLink } from 'react-router-dom';
+import apiRequest from "../../apiRequest"
+
 
 const Comments = ({postId, addComment, newComments = [] }) => {
 
@@ -9,7 +11,6 @@ const Comments = ({postId, addComment, newComments = [] }) => {
   const [errors, setErrors] = useState(null)
   const [comments, setComments] = useState([])
 
-  const {api} = useContext(ApiContext)
 
   useEffect(() => {
 
@@ -17,7 +18,7 @@ const Comments = ({postId, addComment, newComments = [] }) => {
 
       try{
         const backendUrl = "/posts/" + postId + "/comments"
-        const responseData = await api.getFromBackend(backendUrl)
+        const responseData = await apiRequest.getFromBackend(backendUrl)
         setComments(responseData.comments)
       }
       catch(e){
@@ -29,12 +30,16 @@ const Comments = ({postId, addComment, newComments = [] }) => {
       }
     }
     getData()
-  },[postId,api])
+  },[postId])
 
   const createComment = (comment) => {
     return (
       <>
-        <p>{comment.author? comment.author.user_name:"Anonimus"}</p>
+        {
+          comment.author
+            ? <NavLink to={"/profile/"+comment.author._id}> {comment.author.user_name} </NavLink>
+            :<p>Anonymus</p>
+        }
         <p>{comment.comment}</p>
       </>
       )

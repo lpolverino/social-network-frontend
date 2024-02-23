@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react"
+import { createContext, useEffect, useState } from "react"
 import Header from "../Header/Header"
 import Friends from "../Friends/Friends"
 import PostDisplayer from "../PostsDisplayer/PostDisplayer"
@@ -6,7 +6,7 @@ import Notification from "../Notification/Notification"
 import utils from "../../utils"
 import {socket} from "../../socket"
 import { Navigate } from "react-router-dom"
-import { ApiContext } from "../../main"
+import apiRequest from "../../apiRequest"
 
 export const UserContext = createContext({
 	user:null,
@@ -28,13 +28,11 @@ const DashBoard = () => {
 	const [renderingIndex, setRenderingIndex] = useState(0)
 	const [isConnected ,setIsConnected] = useState(socket.connected)
 
-	const {api} = useContext(ApiContext)
-
 	useEffect( () => {
 		const getUser = async () =>{
 			const backendUrl = "/users/" + utils.getuser() + "/profile"
 			try{
-				const userRequestData = await api.getFromBackend(backendUrl)
+				const userRequestData = await apiRequest.getFromBackend(backendUrl)
 				utils.setUserDetails(userRequestData.user)
 				setUser(userRequestData.user)
 			}
@@ -51,7 +49,7 @@ const DashBoard = () => {
 		!userDetails
 		? getUser()
 		:	setUser(userDetails)
-	},[api])
+	},[])
 
 	useEffect(() => {
 		utils.setUserDetails(JSON.stringify(user))
