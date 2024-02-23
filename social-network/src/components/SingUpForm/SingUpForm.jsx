@@ -1,6 +1,6 @@
-import { useState } from "react"
-import utils from "../../utils"
+import { useContext, useState } from "react"
 import PropTypes from 'prop-types'; 
+import { ApiContext } from "../../main";
 
 const SingUpForm = ({setLogged}) => {
 
@@ -11,6 +11,7 @@ const SingUpForm = ({setLogged}) => {
 	const [email, setEmail] = useState('')
 	const [errors, setErrors] = useState(null)
 
+	const {api} = useContext(ApiContext)
 	
 	const handleSubmit = async (e) =>{
 		e.preventDefault()
@@ -19,33 +20,16 @@ const SingUpForm = ({setLogged}) => {
 			setErrors([{message:"passords don't match"}])
 			return
 		}
-
 		setRquestPending(true)
 		try{
-			const backendUrl = utils.getBackEnd() + "/singup"
-			const response = await fetch( backendUrl,{
-				headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        },
-				method:"POST",
-				body:JSON.stringify({username,password,email})
-			})
-
-			const responseData = await response.json()
-
-			if(!response.ok){
-				setErrors(responseData.errors)
-				return
-			}
-			
-			utils.setToken(responseData.token)
-			utils.setUser(responseData.user)
-			setLogged(true)
-		}catch(e){
-			setErrors(e)
+			const singUpResponseData = await api.postSignUp({username,password,email})
+			setLogged(singUpResponseData)
+		}
+		catch(e){
 			console.log(e);
-		}finally{
+			setErrors(e)
+		}
+		finally{
 			setRquestPending(false)
 		}
 	}

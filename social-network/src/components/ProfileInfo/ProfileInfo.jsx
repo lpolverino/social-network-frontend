@@ -3,11 +3,10 @@ import { useState } from "react"
 import PostDisplayer from "../PostsDisplayer/PostDisplayer"
 
 const ProfileInfo = ({userData, isCurrentUser}) => {
-
-  const [imageSource, setImageSource] = useState("gravatar")
-
   const {user, posts} = userData
-
+  
+  const [imageSource, setImageSource] = useState(user.github_image ?"github":"gravatar")
+  
   const changePhoto = (e) => {
     e.preventDefault()
     setImageSource(prevState => prevState === "gravatar"?"github":"gravatar")

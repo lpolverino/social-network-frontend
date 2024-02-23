@@ -2,6 +2,7 @@ import { useContext, useState } from "react"
 import { UserContext } from "../DashBoard/DashBoard"
 import utils from "../../utils"
 import { NavLink } from "react-router-dom"
+import { ApiContext } from "../../main"
 
 const Friends = () => {
 
@@ -10,30 +11,15 @@ const Friends = () => {
 	const [followRequestPending, setFollowRequestPending] = useState(false)
 	const [error,setError] = useState(null)
 
-
 	const {user, updateUser, socket} = useContext(UserContext)
+	const {api} = useContext(ApiContext)
 
 	const sendFollow = async (e) => {
 		e.preventDefault()
-		console.log(`send request to ${searchBarText}`);
 		setFollowRequestPending(true)
-		const backendUrl = utils.getBackEnd() + "/users/" + utils.getuser() +"/follow"
+		const backendUrl = "/users/" + utils.getuser() +"/follow"
 		try{
-			const response = await fetch(backendUrl, {
-				headers:{
-					'Authorization':`Bearer ${utils.getToken()}`,
-					'Accept':'application/json',
-					'Content-type':'application/json',
-				},
-				method:"POST",
-				body:JSON.stringify({username:searchBarText})
-			})
-			const responseData = await response.json()
-			if(!response.ok){
-				const errorData = `THere was an http error ${response.status} ${responseData.errors.msg}`
-				setError(errorData)
-				return
-			}
+			const responseData = await api.postToBackend(backendUrl,{username:searchBarText})
 
 			const newUser = {
 				...user,
@@ -74,7 +60,6 @@ const Friends = () => {
 		}
 
 		const pending =  Array.from(difference(followers,following))
-		console.log(pending);
 		
 		const createPendingUser = (pendingUser) =>{
 			return (<li key={pendingUser._id}>

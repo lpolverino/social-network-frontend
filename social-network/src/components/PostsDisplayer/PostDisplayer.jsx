@@ -1,14 +1,16 @@
+import { ApiContext } from "../../main";
 import { socket } from "../../socket";
-import utils from "../../utils";
 import NewPost from "../NewPost/NewPost"
 import Post from "../Post/Post";
 import PropType from "prop-types"
 
-import { useEffect, useReducer, useState } from "react";
+import { useContext, useEffect, useReducer, useState } from "react";
 
 const PostDisplayer = ({userPost}) => {
   const [posts, dispatch] = useReducer(postReducer, userPost ??[])
   const [isLoading, setIsLoading] = useState(userPost === undefined)
+
+  const {api} = useContext(ApiContext)
 
   const toggleLike = (postId, newLikes) => {
     dispatch({
@@ -44,18 +46,9 @@ const PostDisplayer = ({userPost}) => {
   useEffect( () => {
       const getData = async () => {
   
-        const backendUrl = utils.getBackEnd() + "/users/index"
+        const backendUrl = "/users/index"
         try{
-          const response = await fetch(backendUrl, {
-            headers:{
-              'Accept':"application/json",
-              'Authorization': `Bearer ${utils.getToken()}`
-            },
-            method:"GET"
-          })
-          const responseData = await response.json()
-  
-          if(!response.ok) throw new Error(`the was an HTTP error : ${response.status} ${responseData.error.message}`)
+          const responseData = await api.getFromBackend(backendUrl)
           
           dispatch({
             type:"initial",
@@ -72,7 +65,7 @@ const PostDisplayer = ({userPost}) => {
       }
       if (userPost === undefined) getData()
     },
-  [userPost]);
+  [userPost,api]);
 
   return (
     <div>

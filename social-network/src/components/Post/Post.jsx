@@ -1,32 +1,24 @@
-import { useState } from "react"
+import { useContext, useState } from "react"
 import utils from "../../utils"
 import PropTypes from "prop-types"
 import Comments from "../Comments/Comments"
 import { NavLink } from "react-router-dom"
+import { ApiContext } from "../../main"
 
 const Post = ({post, postHandlers}) => {
   const [isLikeRequestPending , setIsLikeRequestPending] = useState(false)
   const [error, setError] = useState(null)
   const [showingComments, setShowingComments] = useState(false)
 
+  const {api} = useContext(ApiContext)
+
   const sendLike = async (e, postId) => {
     e.preventDefault()
     setIsLikeRequestPending(true)
-    const backendUrl = utils.getBackEnd() +"/posts/" + postId + "/likes/" + utils.getuser()
+    const backendUrl = "/posts/" + postId + "/likes/" + utils.getuser()
     try {
-      const response = await fetch(backendUrl,{
-        headers:{
-					'Authorization':`Bearer ${utils.getToken()}`,
-					'Accept':'application/json',
-					'Content-type':'application/json',
-        },
-        method: "POST",
-      })
-      const responseData = await response.json();
-      if(!response.ok){
-        setError(response.errors.msg)
-      }
-      postHandlers.toggleLike(postId, responseData.newLikes)
+     const likesResponseData = await api.postToBackend(backendUrl,{})
+     postHandlers.toggleLike(postId, likesResponseData.newLikes)
     }
     catch(e){
       console.log(e);

@@ -1,13 +1,18 @@
 import { useState } from 'react'
 import utils from '../../utils'
-import { useNavigate, Navigate } from 'react-router-dom'
+import { Navigate } from 'react-router-dom'
 import LonginForm from '../LoginForm/LonginForm'
 import SingUpForm from '../SingUpForm/SingUpForm'
 
 const Login = () => {
   const [isLogged, setIsLogged] = useState(utils.isLogged())
   const [isLoggin, setIsLoggin] = useState(true)
-  const navigator = useNavigate()
+ 
+ const setVerifiedUser = (user) =>  {
+    setIsLogged(true)
+    utils.setToken(user.token)
+    utils.setUser(user.user)
+  } 
 
   const createLogin = () =>{
     
@@ -19,8 +24,8 @@ const Login = () => {
     return (
       <>
       { isLoggin 
-        ? <LonginForm setLogged = {setIsLogged}></LonginForm>
-        : <SingUpForm setLogged = {setIsLogged}></SingUpForm>
+        ? <LonginForm setLogged = {setVerifiedUser}></LonginForm>
+        : <SingUpForm setLogged = {setVerifiedUser}></SingUpForm>
       }
       <button onClick = { (e) => handleClick(e)}> {isLoggin ? "Go to Sing Up":"Go to Log In"} </button>
       </>

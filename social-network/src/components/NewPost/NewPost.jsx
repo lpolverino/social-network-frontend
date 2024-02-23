@@ -1,7 +1,7 @@
 import { useContext, useState } from "react"
 import { UserContext } from "../DashBoard/DashBoard"
-import utils from "../../utils"
 import PropTypes from 'prop-types';
+import { ApiContext } from "../../main";
 
 const NewPost = ({updatePosts}) => {
   
@@ -10,33 +10,22 @@ const NewPost = ({updatePosts}) => {
   const [errors, setErrors] = useState(null)
 
   const {user} = useContext(UserContext)
+  const {api} = useContext(ApiContext)
 
   const sendPost = async (e) => {
     e.preventDefault()
     setSendingPost(true)
     try{
-      const backendUrl = utils.getBackEnd() + "/posts/" + user._id
+      const backendUrl = "/posts/" + user._id
       const newPost = {
         content:postContent
       }
-      const response = await fetch(backendUrl, {
-        headers:{
-					'Authorization':`Bearer ${utils.getToken()}`,
-          'Accept':'application/json',
-					'Content-type':'application/json',
-				},
-				method:"POST",
-        body:JSON.stringify(newPost)
-      })
-      const responseData = await response.json()
-
-      if(!response.ok){
-        console.log(responseData.errors);
-        setErrors(responseData.errors)
-        return
-      }
+      const responseData = await api.postToBackend(backendUrl, newPost)
       const savedPost = responseData.post
-      savedPost.author_name = responseData.post_author
+      savedPost.author = {
+        _id: responseData.post.author._id,
+        user_name:responseData.post_author
+      }
       updatePosts(savedPost)
       setPostContent('')
     }

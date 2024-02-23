@@ -1,7 +1,8 @@
 import { NavLink, useParams } from "react-router-dom"
-import { useEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import ProfileInfo from "../ProfileInfo/ProfileInfo"
 import utils from "../../utils"
+import { ApiContext } from "../../main"
 
 const Profile = () => {
   
@@ -10,23 +11,14 @@ const Profile = () => {
   const [errors, setErrors] = useState(null)
   const [userData, setUserData] = useState(null)
   
+  const {api} = useContext(ApiContext)
+
    useEffect( () => {
     const getData = async () => {
       const userId = params.userId
       try{
-          const userBackEndUrl = utils.getBackEnd() +"/users/" + userId + "/profile"
-          const userResponse = await fetch(userBackEndUrl, {
-            headers:{
-              'Accept':'application/json',
-              'Authorization': `Bearer ${utils.getToken()}`
-            },
-            method:"GET",
-          })
-          const userResponseData = await userResponse.json()
-          console.log(userResponseData);
-
-          if(!userResponse.ok) throw new Error(`HTTP ERROR ${userResponse.status} when fetching the user ${userId} , ${userResponseData.error.msg}`)
-         
+          const userBackEndUrl = "/users/" + userId + "/profile"
+          const userResponseData = await api.getFromBackend(userBackEndUrl)
           setUserData(userResponseData)
       }
       catch(e){
@@ -39,7 +31,7 @@ const Profile = () => {
     }
 
     getData()
-  },[ params])
+  },[ api, params])
 
   return (
     <div>

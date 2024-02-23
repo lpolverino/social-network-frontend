@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types'; 
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import utils from '../../utils';
+import { ApiContext } from '../../main';
 
 const LonginForm = ({setLogged}) => {
   
@@ -9,32 +10,18 @@ const LonginForm = ({setLogged}) => {
   const [pendingRequest, setPendingRequest] = useState(false)
   const [errors, setErrors] = useState(null)
 
+  const {api} = useContext(ApiContext)
+
   const sendLogInRequest =  async (username, password) =>{
 
     setPendingRequest(true)
-    const backendUrl = utils.getBackEnd() + "/login"
     try{
-      const respone = await fetch(backendUrl, {
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        },
-        method: "POST",
-        body: JSON.stringify({username, password})
-      })
-      const responeData = await respone.json()
-      if(respone.ok){
-        setLogged(true)
-        utils.setToken(responeData.token)
-        utils.setUser(responeData.user)
-      }else{
-        console.log(responeData.message);
-        throw new Error(responeData.message)
-      }
+      const loginUserData = await api.postLogin({username, password})
+      setLogged(loginUserData)
     }
-    catch (e){
-      console.log(e)
-      setErrors(e.message)
+    catch(e){
+      console.log(e);
+      setErrors(e)
     }
     finally{
       setPendingRequest(false)
@@ -63,10 +50,7 @@ const LonginForm = ({setLogged}) => {
       console.log("received data");
       if(event.origin === utils.getBackEnd()){
         if(event.data){
-          console.log(event.data);
-          utils.setToken(event.data.token)
-          utils.setUser(event.data.user) 
-          setLogged(true)
+          setLogged(event.data)
           popup?.close()
         }
       }

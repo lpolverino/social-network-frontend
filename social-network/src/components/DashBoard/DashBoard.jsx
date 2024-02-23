@@ -1,4 +1,4 @@
-import { createContext, useEffect, useState } from "react"
+import { createContext, useContext, useEffect, useState } from "react"
 import Header from "../Header/Header"
 import Friends from "../Friends/Friends"
 import PostDisplayer from "../PostsDisplayer/PostDisplayer"
@@ -6,6 +6,7 @@ import Notification from "../Notification/Notification"
 import utils from "../../utils"
 import {socket} from "../../socket"
 import { Navigate } from "react-router-dom"
+import { ApiContext } from "../../main"
 
 export const UserContext = createContext({
 	user:null,
@@ -27,26 +28,15 @@ const DashBoard = () => {
 	const [renderingIndex, setRenderingIndex] = useState(0)
 	const [isConnected ,setIsConnected] = useState(socket.connected)
 
+	const {api} = useContext(ApiContext)
+
 	useEffect( () => {
-		console.log("gerUser");
 		const getUser = async () =>{
-			console.log("retrieving data");
-			const backendUrl = utils.getBackEnd() +"/users/" + utils.getuser() + "/profile"
+			const backendUrl = "/users/" + utils.getuser() + "/profile"
 			try{
-				const response = await fetch(backendUrl, {
-					headers:{
-						'Accept': 'application/json',
-					'Authorization':`Bearer ${utils.getToken()}`,
-					}
-				});
-				
-				const responseData = await response.json()
-				if(!response.ok){
-					setError(`There was a HTTP ERROR ${response.status} Message error is ${responseData.error.msg}`)
-					return
-				}
-				utils.setUserDetails(responseData.user)
-				setUser(responseData.user)
+				const userRequestData = await api.getFromBackend(backendUrl)
+				utils.setUserDetails(userRequestData.user)
+				setUser(userRequestData.user)
 			}
 			catch(e){
 				console.log(e);
@@ -61,7 +51,7 @@ const DashBoard = () => {
 		!userDetails
 		? getUser()
 		:	setUser(userDetails)
-	},[])
+	},[api])
 
 	useEffect(() => {
 		utils.setUserDetails(JSON.stringify(user))

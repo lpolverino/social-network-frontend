@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import NewComment from '../NewComment/NewComment'
-import utils from '../../utils';
 import PropTypes from 'prop-types';
+import { ApiContext } from '../../main';
 
 const Comments = ({postId, addComment}) => {
 
@@ -9,24 +9,15 @@ const Comments = ({postId, addComment}) => {
   const [errors, setErrors] = useState(null)
   const [comments, setComments] = useState([])
 
+  const {api} = useContext(ApiContext)
+
   useEffect(() => {
 
     const getData = async () => {
 
       try{
-        const backendUrl = utils.getBackEnd() + "/posts/" + postId + "/comments"
-        const response = await fetch(backendUrl, {
-          headers:{
-            'Authorization' : `Bearer ${utils.getToken()}`,
-            'Accept': `application/json`,
-          },
-          method:"GET",
-        })
-  
-        const responseData = await response.json()
-
-        if(!response.ok) throw new Error(`there was a HTTP error ${response.status} ${responseData.error.msg}`)
-      
+        const backendUrl = "/posts/" + postId + "/comments"
+        const responseData = await api.getFromBackend(backendUrl)
         setComments(responseData.comments)
       }
       catch(e){
@@ -38,7 +29,8 @@ const Comments = ({postId, addComment}) => {
       }
     }
     getData()
-  },[])
+  },[postId,api])
+
   return (
     <div>Comments
         <NewComment postId ={postId} addComment={(commentId) => addComment(postId, commentId)}></NewComment>
