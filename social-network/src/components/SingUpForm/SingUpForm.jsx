@@ -1,6 +1,8 @@
 import { useState } from "react"
 import PropTypes from 'prop-types'; 
 import apiRequest from "../../apiRequest";
+import utils from "../../utils";
+import ErrorDisplayer from "../ErrorDisplayer/ErrorDisplayer";
 
 const SingUpForm = ({setLogged}) => {
 
@@ -10,13 +12,12 @@ const SingUpForm = ({setLogged}) => {
 	const [passwordRepeat, setPasswordRepeat] = useState('')
 	const [email, setEmail] = useState('')
 	const [errors, setErrors] = useState(null)
-
 	
 	const handleSubmit = async (e) =>{
 		e.preventDefault()
 		
 		if(password !== passwordRepeat){
-			setErrors([{message:"passords don't match"}])
+			setErrors(utils.parseError( new Error("passords don't match")))
 			return
 		}
 		setRquestPending(true)
@@ -26,7 +27,7 @@ const SingUpForm = ({setLogged}) => {
 		}
 		catch(e){
 			console.log(e);
-			setErrors(e)
+			setErrors(utils.parseError(e))
 		}
 		finally{
 			setRquestPending(false)
@@ -34,11 +35,9 @@ const SingUpForm = ({setLogged}) => {
 	}
 
 	const createErrorDisplayer = () =>{
-		console.log(errors);
+
 		return (
-			<ul>
-				{errors.map(error => <li key={error.msg}> {error.msg} </li>)}
-			</ul>
+			<ErrorDisplayer errors={[errors]} > </ErrorDisplayer>
 		)
 	}
   

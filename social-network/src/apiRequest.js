@@ -26,7 +26,10 @@ import utils from "./utils"
       if(!response.ok){
           throw new Error(
             `There was an HTTP Error ${response.status} handling the request`,
-            {cause:responseData.errors}
+            {cause:responseData.error 
+              ? responseData.error.msg
+              : responseData.errors
+            }
           )  
       }
       return responseData

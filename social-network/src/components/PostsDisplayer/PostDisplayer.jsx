@@ -4,11 +4,13 @@ import Post from "../Post/Post";
 import PropType from "prop-types"
 import { useEffect, useReducer, useState } from "react";
 import apiRequest from "../../apiRequest";
+import utils from "../../utils";
+import ErrorDisplayer from "../ErrorDisplayer/ErrorDisplayer";
 
 const PostDisplayer = ({userPost}) => {
   const [posts, dispatch] = useReducer(postReducer, userPost ??[])
   const [isLoading, setIsLoading] = useState(userPost === undefined)
-
+  const [errors, setErrors] = useState(null)
 
   const toggleLike = (postId, newLikes) => {
     dispatch({
@@ -55,6 +57,7 @@ const PostDisplayer = ({userPost}) => {
         }
         catch(e){
           console.log(e);
+          setErrors(utils.parseError(e))
         }
         finally{
           setIsLoading(false)
@@ -70,6 +73,7 @@ const PostDisplayer = ({userPost}) => {
       {!userPost && <NewPost updatePosts={addNewPost}></NewPost>}
       <div>
         <ul>
+          {errors && <ErrorDisplayer errors={[errors]} > </ErrorDisplayer>}
           {!isLoading && posts.map(post => <li key={post._id}><Post post={post} postHandlers={postHandlers}></Post></li>)}
         </ul>
       </div>
@@ -95,13 +99,11 @@ const postReducer = (posts, action) => {
     }
     case "add": return [action.newPost].concat(posts)
     case "comment": {
-      console.log(`adding comment ${action.comment._id} to post ${action.postId}`);
       const newComments = posts.map(post => {
         return (post._id === action.postId)
         ?{...post, comments:post.comments.concat([action.comment])}
         :post
       })
-      console.log(newComments);
       return newComments
     }
     default: throw new Error(`Dispatch action ${action.type} not found`)

@@ -3,6 +3,8 @@ import NewComment from '../NewComment/NewComment'
 import PropTypes from 'prop-types';
 import { NavLink } from 'react-router-dom';
 import apiRequest from "../../apiRequest"
+import utils from '../../utils';
+import ErrorDisplayer from '../ErrorDisplayer/ErrorDisplayer';
 
 
 const Comments = ({postId, addComment, newComments = [] }) => {
@@ -23,7 +25,7 @@ const Comments = ({postId, addComment, newComments = [] }) => {
       }
       catch(e){
         console.log(e);
-        setErrors(e);
+        setErrors(utils.parseError(e));
       }
       finally{
         setIsLoading(false)
@@ -48,7 +50,17 @@ const Comments = ({postId, addComment, newComments = [] }) => {
   const createComments = (comments) => {
     return (
       <>
-      {!isLoading && !errors && comments.map(comment => <li key={comment._id}>{createComment(comment)}</li>)}
+      {!isLoading && comments.map(comment => <li key={comment._id}>{createComment(comment)}</li>)}
+      </>
+    )
+  }
+
+  const createAllComments = () => {
+
+    return (
+      <>
+        { createComments(newComments) }      
+        { createComments(comments) }
       </>
     )
   }
@@ -57,8 +69,10 @@ const Comments = ({postId, addComment, newComments = [] }) => {
     <div>Comments
         <NewComment postId ={postId} addComment={(commentId) => addComment(postId, commentId)}></NewComment>
         <ul>
-          { createComments(newComments) }
-          { createComments(comments) }
+          {errors 
+            ? <ErrorDisplayer errors={[errors]}></ErrorDisplayer>
+            : createAllComments()
+          }
         </ul>
     </div>
   )

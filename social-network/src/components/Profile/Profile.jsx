@@ -3,6 +3,7 @@ import { useEffect, useState } from "react"
 import ProfileInfo from "../ProfileInfo/ProfileInfo"
 import utils from "../../utils"
 import apiRequest from "../../apiRequest"
+import ErrorDisplayer from "../ErrorDisplayer/ErrorDisplayer"
 
 const Profile = () => {
   
@@ -22,7 +23,7 @@ const Profile = () => {
       }
       catch(e){
         console.log(e);
-        setErrors(e)
+        setErrors(utils.parseError(e))
       }
       finally{
         setIsLoading(false)
@@ -35,6 +36,7 @@ const Profile = () => {
   return (
     <div>
       <NavLink to={"/"}>Champagne</NavLink>
+      {errors && <ErrorDisplayer errors={[errors]}></ErrorDisplayer>}
       { !isLoading && !errors &&
         <ProfileInfo userData={userData} isCurrentUser={utils.getuser() === params.userId} > </ProfileInfo>
       }

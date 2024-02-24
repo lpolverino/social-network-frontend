@@ -2,6 +2,8 @@ import { useContext, useState } from "react"
 import { UserContext } from "../DashBoard/DashBoard"
 import PropTypes from 'prop-types';
 import apiRequest from "../../apiRequest";
+import utils from "../../utils";
+import ErrorDisplayer from "../ErrorDisplayer/ErrorDisplayer";
 
 const NewPost = ({updatePosts}) => {
   
@@ -30,14 +32,16 @@ const NewPost = ({updatePosts}) => {
     }
     catch(e){
       console.log(e);
-      setErrors(e)
+      setErrors(utils.parseError(e))
     }
     finally {
       setSendingPost(false)
     }
   }
 
-  const showErrors = () =>{}
+  const showErrors = () =>{
+    return <ErrorDisplayer errors={[errors]}></ErrorDisplayer>
+  }
 
   return (
     <div>

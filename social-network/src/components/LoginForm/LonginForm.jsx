@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import { useState } from 'react';
 import utils from '../../utils';
 import apiRequest from "../../apiRequest"
+import ErrorDisplayer from '../ErrorDisplayer/ErrorDisplayer';
 
 const LonginForm = ({setLogged}) => {
   
@@ -19,8 +20,8 @@ const LonginForm = ({setLogged}) => {
       setLogged(loginUserData)
     }
     catch(e){
-      console.log(e);
-      setErrors(e)
+      console.log(e.message);
+      setErrors(utils.parseError(e))
     }
     finally{
       setPendingRequest(false)
@@ -62,7 +63,7 @@ const LonginForm = ({setLogged}) => {
 
   const createErrorDisplayer = () => {
     return (
-      <p>{errors}</p>
+      <ErrorDisplayer errors={[errors]}> </ErrorDisplayer>
     )
   }
   

@@ -4,6 +4,7 @@ import { useContext, useEffect, useState } from "react";
 import utils from "../../utils";
 import { UserContext } from "../DashBoard/DashBoard";
 import apiRequest from "../../apiRequest";
+import ErrorDisplayer from "../ErrorDisplayer/ErrorDisplayer";
 
 const Notification = () => {  
 
@@ -24,14 +25,14 @@ const Notification = () => {
       }
       catch(e){
         console.log(e);
-        setError(e.message)
+        setError(utils.parseError(e))
       }
     }
     clearNotifications()
   },[user])
 
   const showError = () => {
-    return <p> There was an Http error : {error}</p>
+    return <ErrorDisplayer errors={[error]}> </ErrorDisplayer>
   } 
 
   const showNotifications = () => {

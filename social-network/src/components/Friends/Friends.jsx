@@ -3,6 +3,7 @@ import { UserContext } from "../DashBoard/DashBoard"
 import utils from "../../utils"
 import apiRequest  from "../../apiRequest"
 import { NavLink } from "react-router-dom"
+import ErrorDisplayer from "../ErrorDisplayer/ErrorDisplayer"
 
 const Friends = () => {
 
@@ -30,7 +31,7 @@ const Friends = () => {
 		}
 		catch(e){
 			console.log(e);
-			setError(e)
+			setError(utils.parseError(e))
 		}finally{
 			setFollowRequestPending(false)
 		}
@@ -81,9 +82,7 @@ const Friends = () => {
 	}
 
 	const showError = () => {
-		return (<>
-			{error}
-		</>)
+		return <ErrorDisplayer errors={[error]}> </ErrorDisplayer>
 	}
 
   return (

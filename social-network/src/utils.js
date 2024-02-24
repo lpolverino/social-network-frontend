@@ -36,6 +36,11 @@ const getUserDetails = () =>{
     if(userDetails === 'undefined') return undefined
     return JSON.parse(userDetails)
 }
+
+const parseError = (error) => {
+    return {msg:error.message, cause:error.cause}
+}
+
 export default  {
     isLogged,
     getBackEnd,
@@ -46,4 +51,5 @@ export default  {
     getuser,
     setUserDetails,
     getUserDetails,
+    parseError
 }

@@ -2,6 +2,7 @@ import { useState } from "react"
 import utils from "../../utils"
 import PropTypes from 'prop-types';
 import apiRequest from "../../apiRequest"
+import ErrorDisplayer from "../ErrorDisplayer/ErrorDisplayer";
 
 const NewComment = ({postId, addComment}) => {
   const [comment,setComment] = useState('')
@@ -23,12 +24,11 @@ const NewComment = ({postId, addComment}) => {
           user_name:utils.getUserDetails().user_name
         }
       }
-      console.log(commentToAdd);
       addComment(commentToAdd)
     }
     catch(e){
       console.log(e);
-      setErrors(e);
+      setErrors(utils.parseError(e));
     }
     finally{
       setRequestPending(false)
@@ -37,7 +37,7 @@ const NewComment = ({postId, addComment}) => {
   }
 
   const showError = () =>{
-    <p> Error ${errors}</p>
+    return <ErrorDisplayer errors={[errors]}> </ErrorDisplayer>  
   }
   return (
     <div>

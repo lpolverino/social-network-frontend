@@ -4,6 +4,7 @@ import PropTypes from "prop-types"
 import Comments from "../Comments/Comments"
 import { NavLink } from "react-router-dom"
 import apiRequest from "../../apiRequest"
+import ErrorDisplayer from "../ErrorDisplayer/ErrorDisplayer"
 
 const Post = ({post, postHandlers}) => {
   const [isLikeRequestPending , setIsLikeRequestPending] = useState(false)
@@ -20,7 +21,7 @@ const Post = ({post, postHandlers}) => {
     }
     catch(e){
       console.log(e);
-      setError(e);
+      setError(utils.parseError(e));
     }
     finally{
       setIsLikeRequestPending(false)
@@ -54,7 +55,9 @@ const Post = ({post, postHandlers}) => {
 
   return (
       <>
-      {! error && createPost()}
+      {error
+        ? <ErrorDisplayer errors={[error]}></ErrorDisplayer>
+        : createPost()}
       </>
     )
     

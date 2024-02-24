@@ -7,6 +7,7 @@ import utils from "../../utils"
 import {socket} from "../../socket"
 import { Navigate } from "react-router-dom"
 import apiRequest from "../../apiRequest"
+import ErrorDisplayer from "../ErrorDisplayer/ErrorDisplayer"
 
 export const UserContext = createContext({
 	user:null,
@@ -38,14 +39,13 @@ const DashBoard = () => {
 			}
 			catch(e){
 				console.log(e);
-				setError(e)
+				setError(utils.parseError(e))
 			}
 			finally{
 				setIsLoading(false)
 			}
 		}
 		const userDetails = utils.getUserDetails()
-		console.log(userDetails);
 		!userDetails
 		? getUser()
 		:	setUser(userDetails)
@@ -81,7 +81,9 @@ const DashBoard = () => {
     };
   }, []);
 
-	const showErrors = () => {}
+	const showErrors = () => {
+		return <ErrorDisplayer errors={[error]}></ErrorDisplayer>
+	}
 	const showContent = () =>{
 
 		return (
