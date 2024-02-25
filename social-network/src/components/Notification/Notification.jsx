@@ -5,6 +5,7 @@ import utils from "../../utils";
 import { UserContext } from "../DashBoard/DashBoard";
 import apiRequest from "../../apiRequest";
 import ErrorDisplayer from "../ErrorDisplayer/ErrorDisplayer";
+import { NavLink } from "react-router-dom";
 
 const Notification = () => {  
 
@@ -14,7 +15,7 @@ const Notification = () => {
   
   const notifications = user.notifications.notifications 
 
-  const notificationsToRender = notifications.map(notification => { return {...notification, id: uuidv4()}})
+  const notificationsToRender = notifications.map(notification => { return {...notification, id: uuidv4()}}).reverse()
 
   useEffect(() =>{
     //clean Notifications
@@ -35,9 +36,17 @@ const Notification = () => {
     return <ErrorDisplayer errors={[error]}> </ErrorDisplayer>
   } 
 
+  const createnotificationUrl = (notification) => {
+    const response = notification.type ==="Post" ? "/posts/" : "/profile/"
+    return response + notification.url
+  }
+
   const showNotifications = () => {
     return <ul>
-        {notificationsToRender.map(notification => <li key={notification.id}>{notification.content}</li>)}
+        {notificationsToRender.map(notification => <li key={notification.id}>
+          {notification.content}
+          <NavLink to={createnotificationUrl(notification)}> Chek it Out !</NavLink>
+          </li>)}
     </ul>
   }
 

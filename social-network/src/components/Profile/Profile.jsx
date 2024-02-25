@@ -1,4 +1,4 @@
-import { NavLink, useParams } from "react-router-dom"
+import { useParams } from "react-router-dom"
 import { useEffect, useState } from "react"
 import ProfileInfo from "../ProfileInfo/ProfileInfo"
 import utils from "../../utils"
@@ -35,7 +35,6 @@ const Profile = () => {
 
   return (
     <div>
-      <NavLink to={"/"}>Champagne</NavLink>
       {errors && <ErrorDisplayer errors={[errors]}></ErrorDisplayer>}
       { !isLoading && !errors &&
         <ProfileInfo userData={userData} isCurrentUser={utils.getuser() === params.userId} > </ProfileInfo>

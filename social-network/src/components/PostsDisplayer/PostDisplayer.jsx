@@ -6,18 +6,24 @@ import { useEffect, useReducer, useState } from "react";
 import apiRequest from "../../apiRequest";
 import utils from "../../utils";
 import ErrorDisplayer from "../ErrorDisplayer/ErrorDisplayer";
+import postReducer from "../../Reducers/postReducer";
+import { useParams } from "react-router-dom";
 
 const PostDisplayer = ({userPost}) => {
-  const [posts, dispatch] = useReducer(postReducer, userPost ??[])
+  
+  const params = useParams()
+  const [posts, dispatch] = useReducer(postReducer, userPost??[])
   const [isLoading, setIsLoading] = useState(userPost === undefined)
   const [errors, setErrors] = useState(null)
 
   const toggleLike = (postId, newLikes) => {
+    console.log(newLikes);
     dispatch({
       type:"like",
       postId,
       newLikes,
     })
+    //console.log(posts);
     const post = posts.find(el => el._id = postId)
     if(post.likes.total < newLikes.total) socket.emit("notify", post.author._id)
   }
@@ -37,22 +43,21 @@ const PostDisplayer = ({userPost}) => {
     const post = posts.find(el => el._id = postId)
     socket.emit("notify",post.author._id)
   }
-    const postHandlers = {
+  
+  const postHandlers = {
     toggleLike,
     addNewPost,
     addComment,
   }
 
   useEffect( () => {
-      const getData = async () => {
-  
-        const backendUrl = "/users/index"
+      const getData = async (backendUrl) => {
         try{
           const responseData = await apiRequest.getFromBackend(backendUrl)
           
           dispatch({
             type:"initial",
-            posts: responseData.posts
+            posts: responseData.posts?? responseData.post
           })
         }
         catch(e){
@@ -64,17 +69,26 @@ const PostDisplayer = ({userPost}) => {
         }
   
       }
-      if (userPost === undefined) getData()
+      if (userPost === undefined)
+       params.postId ? getData("/posts/"+params.postId) : getData("/users/index")
     },
-  [userPost]);
+    [userPost, params]);
+
+    const renderPosts = () => {
+      if (Array.isArray(posts))      
+        return posts.map(post => <li key={post._id}><Post post={post} postHandlers={postHandlers}></Post></li>)
+      
+      return <Post post={posts} postHandlers={postHandlers}> </Post>
+    }
 
   return (
     <div>
-      {!userPost && <NewPost updatePosts={addNewPost}></NewPost>}
+      {!userPost && !params.postId && <NewPost updatePosts={addNewPost}></NewPost>}
       <div>
         <ul>
           {errors && <ErrorDisplayer errors={[errors]} > </ErrorDisplayer>}
-          {!isLoading && posts.map(post => <li key={post._id}><Post post={post} postHandlers={postHandlers}></Post></li>)}
+          {!isLoading && renderPosts()}
+          
         </ul>
       </div>
     </div>
@@ -84,30 +98,5 @@ const PostDisplayer = ({userPost}) => {
 PostDisplayer.propTypes = {
   userPost: PropType.arrayOf(PropType.object)
 }
-
-const postReducer = (posts, action) => {
-  switch(action.type){
-    case "initial" : {
-      return action.posts
-    }
-    case "like" : {
-      return posts.map(post => {
-        return (post._id === action.postId) 
-          ? Object.assign(post, {likes:action.newLikes})
-          :post
-      })
-    }
-    case "add": return [action.newPost].concat(posts)
-    case "comment": {
-      const newComments = posts.map(post => {
-        return (post._id === action.postId)
-        ?{...post, comments:post.comments.concat([action.comment])}
-        :post
-      })
-      return newComments
-    }
-    default: throw new Error(`Dispatch action ${action.type} not found`)
-  }
-} 
 
 export default PostDisplayer

@@ -1,18 +1,15 @@
 import { createContext, useEffect, useState } from "react"
 import Header from "../Header/Header"
-import Friends from "../Friends/Friends"
-import PostDisplayer from "../PostsDisplayer/PostDisplayer"
-import Notification from "../Notification/Notification"
 import utils from "../../utils"
-import {socket} from "../../socket"
-import { Navigate } from "react-router-dom"
+import { socket } from "../../socket"
+import { Outlet } from "react-router-dom"
 import apiRequest from "../../apiRequest"
 import ErrorDisplayer from "../ErrorDisplayer/ErrorDisplayer"
 
 export const UserContext = createContext({
 	user:null,
 	updateUser:null,
-	socket: null
+	socket: null,
 })
 
 const DashBoard = () => {
@@ -21,14 +18,13 @@ const DashBoard = () => {
 	const [error, setError] = useState(null)
 
 	const [rendering, setRendering] = useState([
-		{ name:'Index', render:() => <PostDisplayer></PostDisplayer> },
-		{name:'Friends', render:() => <Friends></Friends>},
-		{name:'Notification', render:() => <Notification></Notification>},
-		{name:'Profile', render: () =><Navigate to={"/profile/"+utils.getuser()} replace={true}></Navigate>}
+		{name:'Home',link:'index'},
+		{name:'followers',link:'followers'},
+		{name:'notifications', link:'notifications', alert:false},
+		{name:'profile', link:`profile/${utils.getuser()}`}
 	]) 
-	const [renderingIndex, setRenderingIndex] = useState(0)
-	const [isConnected ,setIsConnected] = useState(socket.connected)
 
+	const [isConnected ,setIsConnected] = useState(socket.connected)
 	
 	const getUser = async () =>{
 		const backendUrl = "/users/" + utils.getuser() + "/profile"
@@ -62,6 +58,12 @@ const DashBoard = () => {
 			console.log(data);
 			alert(data)
 			getUser()
+			const newHeaders = rendering.map(element => {
+				return element.alert !== undefined 
+					?{...element, alert:true}
+					:element
+				})
+			setRendering(newHeaders)
 		})
 	}, [socket])
 	
@@ -92,24 +94,15 @@ const DashBoard = () => {
 
 		return (
 			<UserContext.Provider value={{user:user, updateUser:setUser, socket:socket}}>
-				{rendering[renderingIndex].render()}
+				<Outlet></Outlet>
 			</UserContext.Provider>
 		)
 	}
 
-	const sections = rendering.map( el => {
-		const sectionToRender = {
-			content:el.name
-		}
-		if(el.name === "Notification"){	
-			sectionToRender.alert =  user!== null ? user.notifications.unread : false
-		}
-		return sectionToRender
-	});
 
 	return (
     <div>
-        <Header setRenderingIndex = {setRenderingIndex} contents = {sections} ></Header>
+        <Header contents = {rendering} ></Header>
 				{error && showErrors()}
 				{!isLoading && !error  && showContent()}
     </div>

@@ -1,19 +1,22 @@
 import PropTypes from 'prop-types'; 
+import { Link } from 'react-router-dom';
 
-const Header = ({ setRenderingIndex, contents}) => {
+const Header = ({contents}) => {
   
     return (
     <div>
-        {contents.map( (content,index) => <div key={content.content} onClick={() => setRenderingIndex(index)} > {content.content} </div>)}
+        <nav>
+        {contents.map((content) => <li key={content.name}><Link to={"/"+content.link}>{content.name}</Link></li>)}
+        </nav>
     </div>
   )
 }
 
 Header.propTypes = {
-    setRenderingIndex: PropTypes.func,
     contents: PropTypes.arrayOf(
         PropTypes.shape({
-            content:PropTypes.string.isRequired,
+            name:PropTypes.string.isRequired,
+            link:PropTypes.string.isRequired,
             alert: PropTypes.bool
         })
     )
