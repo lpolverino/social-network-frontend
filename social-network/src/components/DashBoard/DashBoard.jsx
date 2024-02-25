@@ -29,22 +29,24 @@ const DashBoard = () => {
 	const [renderingIndex, setRenderingIndex] = useState(0)
 	const [isConnected ,setIsConnected] = useState(socket.connected)
 
-	useEffect( () => {
-		const getUser = async () =>{
-			const backendUrl = "/users/" + utils.getuser() + "/profile"
-			try{
-				const userRequestData = await apiRequest.getFromBackend(backendUrl)
-				utils.setUserDetails(userRequestData.user)
-				setUser(userRequestData.user)
-			}
-			catch(e){
-				console.log(e);
-				setError(utils.parseError(e))
-			}
-			finally{
-				setIsLoading(false)
-			}
+	
+	const getUser = async () =>{
+		const backendUrl = "/users/" + utils.getuser() + "/profile"
+		try{
+			const userRequestData = await apiRequest.getFromBackend(backendUrl)
+			utils.setUserDetails(userRequestData.user)
+			setUser(userRequestData.user)
 		}
+		catch(e){
+			console.log(e);
+			setError(utils.parseError(e))
+		}
+		finally{
+			setIsLoading(false)
+		}
+	}
+
+	useEffect( () => {
 		const userDetails = utils.getUserDetails()
 		!userDetails
 		? getUser()
@@ -57,7 +59,9 @@ const DashBoard = () => {
 	
 	useEffect( () => {
 		socket.on("notification", (data) => {
+			console.log(data);
 			alert(data)
+			getUser()
 		})
 	}, [socket])
 	

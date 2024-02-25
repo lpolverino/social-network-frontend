@@ -14,12 +14,12 @@ const Friends = () => {
 
 	const {user, updateUser, socket} = useContext(UserContext)
 
-	const sendFollow = async (e) => {
+	const sendFollow = async (e,userToFollow) => {
 		e.preventDefault()
 		setFollowRequestPending(true)
 		const backendUrl = "/users/" + utils.getuser() +"/follow"
 		try{
-			const responseData = await apiRequest.postToBackend(backendUrl,{username:searchBarText})
+			const responseData = await apiRequest.postToBackend(backendUrl,{username:userToFollow})
 
 			const newUser = {
 				...user,
@@ -56,10 +56,15 @@ const Friends = () => {
 		const followers = user.followers
 		
 		const difference = (a,b) => {
-			return a.filter(element => ! b.indexOf(element) !== -1 )
+			return a.filter(element => {
+					const match = b.filter(user => user._id === element._id)
+					console.log(match);
+					return match.length === 0
+			})
 		}
 
 		const pending =  Array.from(difference(followers,following))
+		console.log(pending);
 		
 		const createPendingUser = (pendingUser) =>{
 			return (<li key={pendingUser._id}>
@@ -68,7 +73,7 @@ const Friends = () => {
 						{pendingUser.username}
 					</NavLink>
 				</p>
-				<button> Accept </button>
+				<button onClick={(e) => sendFollow(e, pendingUser.username)}> Accept </button>
 				<button> Ignore </button>
 			</li>)
 		}
@@ -90,8 +95,8 @@ const Friends = () => {
 			<div>
 				<input type="text" name="searchBar" id="searchBar" value={searchBarText} onChange={e => setSearchBarText(e.target.value)} />
 				{ followRequestPending
-					? <button onClick={e => sendFollow(e)} disabled>Follow</button>
-					: <button onClick={e => sendFollow(e)}>Follow</button>
+					? <button disabled>Follow</button>
+					: <button onClick={e => sendFollow(e, searchBarText)}>Follow</button>
 				}
 			</div>
 			<div>
