@@ -10,6 +10,7 @@ const NewPost = ({updatePosts}) => {
   const [postContent, setPostContent] = useState('')
   const [sendingPost, setSendingPost] = useState(false)
   const [errors, setErrors] = useState(null)
+  const [postImage, setPostImage] = useState({myFile: ""})
 
   const {user} = useContext(UserContext)
 
@@ -19,7 +20,8 @@ const NewPost = ({updatePosts}) => {
     try{
       const backendUrl = "/posts/" + user._id
       const newPost = {
-        content:postContent
+        content:postContent,
+        image: postImage
       }
       const responseData = await apiRequest.postToBackend(backendUrl, newPost)
       const savedPost = responseData.post
@@ -39,6 +41,13 @@ const NewPost = ({updatePosts}) => {
     }
   }
 
+  const handleFileUpload = async (e) => {
+    const file = e.target.files[0]
+    const base64 = await utils.convertToBase64(file)
+    setPostImage({...postImage, myFile:base64})
+    console.log(base64);
+  }
+
   const showErrors = () =>{
     return <ErrorDisplayer errors={[errors]}></ErrorDisplayer>
   }
@@ -53,6 +62,20 @@ const NewPost = ({updatePosts}) => {
         onChange={e => setPostContent(e.target.value)}
         placeholder="What you wanna share?">  
       </input>
+      <label htmlFor="file-upload">
+        {postImage.myFile
+        ?<p>upload Image</p>
+        :<img src={postImage.myFile} alt="post image"></img>
+        }
+      </label>
+      <input
+        type="file"
+        label="image"
+        name="myFIle"
+        id="file-upload"
+        accept=".jpeg, .png, .jpg"
+        onChange={e => handleFileUpload(e)}
+      />
       {sendingPost
         ? <button onClick={e => sendPost(e)} disabled>POST!</button> 
         : <button onClick={e => sendPost(e)} >POST!</button> 

@@ -41,6 +41,19 @@ const parseError = (error) => {
     return {msg:error.message, cause:error.cause}
 }
 
+const convertToBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+    const fileReader = new FileReader();
+    fileReader.readAsDataURL(file);
+    fileReader.onload = () => {
+      resolve(fileReader.result)
+    };
+    fileReader.onerror = (error) => {
+      reject(error)
+    }
+  })
+}
+
 export default  {
     isLogged,
     getBackEnd,
@@ -51,5 +64,6 @@ export default  {
     getuser,
     setUserDetails,
     getUserDetails,
-    parseError
+    parseError,
+    convertToBase64,
 }

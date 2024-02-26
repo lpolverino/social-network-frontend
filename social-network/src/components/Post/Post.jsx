@@ -42,6 +42,7 @@ const Post = ({post, postHandlers}) => {
    <> 
       <NavLink to={"/profile/"+post.author._id}>By: {post.author.user_name} </NavLink>
       <p> {post.content} </p>
+      {post.image && <img src={post.image} alt=""/>}
       {isLikeRequestPending
         ? <button disabled> likes: {post.likes.total}</button>
         : <button onClick={(e) => sendLike (e,post._id) }> likes: {post.likes.total}</button>
