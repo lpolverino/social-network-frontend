@@ -1,12 +1,14 @@
 import PropTypes from "prop-types"
 import { useState } from "react"
 import PostDisplayer from "../PostsDisplayer/PostDisplayer"
+import UpdateUser from "../UpdateUser/UpdateUser"
 
 const ProfileInfo = ({userData, isCurrentUser}) => {
   const {user, posts} = userData
   
   const [imageSource, setImageSource] = useState(user.github_image ?"github":"gravatar")
-  
+  const [isUpdating, setIsUpdating] = useState(false)
+
   const changePhoto = (e) => {
     e.preventDefault()
     setImageSource(prevState => prevState === "gravatar"?"github":"gravatar")
@@ -40,7 +42,8 @@ const ProfileInfo = ({userData, isCurrentUser}) => {
   const showCurrentUser = () => {
     return <>
     {showUser()}
-    <button>Edit</button>
+    <button onClick={() => setIsUpdating(!isUpdating)}> Edit </button>
+    {isUpdating && <UpdateUser updateUser={()=>{}}></UpdateUser>}
     </>
   }
 

@@ -12,13 +12,14 @@ import utils from "./utils"
         ? {...headers, 'Authorization': `Bearer ${utils.getToken()}`}
         : headers
       
-      const requestparams = method === "POST" 
+      const requestparams = method !== "GET" 
       ? {headers: requestHeaders, method, body:JSON.stringify(body)}
       : {headers: requestHeaders, method, }
 
       const url = utils.getBackEnd() + route
     try{
 
+      console.log(requestparams);
       const response = await fetch(url, requestparams)
   
       const responseData = await response.json()
@@ -68,9 +69,10 @@ import utils from "./utils"
     }   
   }
 
-  const putToBackend = async (route) => {
+  const putToBackend = async (route, data = {}) => {
     try{
-      const responseData = await sendRequest(route, "PUT", {}, true)
+      console.log(data);
+      const responseData = await sendRequest(route, "PUT", data, true)
       return responseData
     }
     catch (e){
