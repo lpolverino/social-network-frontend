@@ -33,8 +33,8 @@ const ProfileInfo = ({userData, isCurrentUser}) => {
     }
 
     return (<>
-    {getImageorText()}
-    {isCurrentUser && <button onClick={e => changePhoto(e)}> Change image</button>}
+    { getImageorText() }
+    {isCurrentUser && <button onClick={ e => changePhoto(e) }> Change image</button>}
     </>
     )
   }

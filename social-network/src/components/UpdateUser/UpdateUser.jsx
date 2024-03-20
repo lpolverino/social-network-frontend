@@ -65,7 +65,9 @@ const UpdateUser = ({updateUser}) => {
   )
 }
 
+
 UpdateUser.propTypes = {
   updateUser: PropTypes.func
 }
+
 export default UpdateUser

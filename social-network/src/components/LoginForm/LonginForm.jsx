@@ -3,6 +3,8 @@ import { useState } from 'react';
 import utils from '../../utils';
 import apiRequest from "../../apiRequest"
 import ErrorDisplayer from '../ErrorDisplayer/ErrorDisplayer';
+import styles from "./loginForm.module.css"
+import { FaGithub } from "react-icons/fa";
 
 const LonginForm = ({setLogged}) => {
   
@@ -68,21 +70,32 @@ const LonginForm = ({setLogged}) => {
   }
   
   return (
-      <div>
-          <h2>Log In</h2>
+      <div className={styles.login}>
           {errors && createErrorDisplayer()}
-          <form onSubmit={(e) => handleSubmit(e)}>
-              <label htmlFor='username'>Username</label>
-              <input type='text' name='username' id='username' value={username} onChange={e => setUsername(e.target.value)}/>
-              <label htmlFor='password'>Password</label>
-              <input type='password' name='password' id='password' value={password} onChange={e => setPassword(e.target.value)}/>
+          <form onSubmit={(e) => handleSubmit(e)} className={styles.form}>
+              <div className={styles.input}>
+                <label htmlFor='username'>Username</label>
+                <input type='text' name='username' id='username' value={username} onChange={e => setUsername(e.target.value)}/>
+              </div>
+              <div className={styles.input}>
+                <label htmlFor='password'>Password</label>
+                <input type='password' name='password' id='password' value={password} onChange={e => setPassword(e.target.value)}/>
+              </div>
               {pendingRequest 
-                ? <button disabled> Log In</button>
-                : <button> Log In</button>
+                ? <button disabled className={styles.loginButton}> Log In</button>
+                : <button className={styles.loginButton}> Log In</button>
               }
           </form>
-          <div onClick={e => handleGithub(e)}>Github</div>
-          <div onClick={e => handleFreeTrial(e)}>Free trial</div>
+          <p className={styles.separetor}>Or</p>
+          <div className={styles.accountButtons}>
+            <div className={styles.github} onClick={e => handleGithub(e)}>
+                <FaGithub size={24}></FaGithub>
+              <p>
+                Log In with Github
+              </p>
+            </div>
+            <div className={styles.freeAccount} onClick={e => handleFreeTrial(e)}>Free trial</div>
+          </div>
       </div>
     )
   }

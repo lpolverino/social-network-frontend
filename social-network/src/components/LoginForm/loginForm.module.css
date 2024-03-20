@@ -1,0 +1,117 @@
+@import "../../index.css";
+
+.login{
+  display: flex;
+  flex-direction: column;
+  background-color: var(--dark-gray);
+  border-radius: 15px;
+  padding: 3rem;
+  margin: 0 auto;
+  width: 50%;
+  min-height: 560px;
+}
+
+.form{
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  min-width: 80%;
+}
+
+.input{
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.input label{
+  font-weight: 600;
+  transition: color 0.1s ease-in;
+}
+
+.input input{
+  outline: none;
+  color: var(--white);
+  background-color: inherit;
+  border: none;
+  border-bottom: 1px solid var(--white);
+  font-size: 1.2em;
+  font-family: "Shippori Mincho";
+  padding-bottom: 2px;
+}
+
+.input:focus-within{
+  color: var(--yellow)
+}
+
+.loginButton,
+.github,
+.freeAccount {
+  margin: 1rem auto;
+  padding: 10px;
+  border: none;
+  border-radius: 15px;
+  opacity: 0.9;
+  cursor: pointer;  
+}
+.loginButton{
+  background-color: var(--yellow);
+  transition: transform 0.5s ease-in-out;
+  width: 80%;
+}
+
+.loginButton:hover{
+  transform: scale(1.1);
+}
+
+.separetor {
+  margin: 2rem;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  text-align: center;
+  width: 90%;
+}
+
+.separetor:before,
+.separetor:after{
+  content: "";
+  flex: 1;
+  border-bottom: 1px solid #fff;
+  margin: auto;
+}
+
+.separetor:not(:empty)::before {
+  margin-right: .30em;
+}
+
+.separetor:not(:empty)::after {
+  margin-left: .30em;
+}
+
+.accountButtons {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.github{
+  cursor: pointer;
+  background-color: var(--gray);
+  color: black;
+  display: flex;
+  align-items: center;
+  width: 80%;
+}
+
+.freeAccount {
+  width: 80%;
+  cursor: pointer;
+  background-color: var(--yellow);
+  color: black;
+}
+
+.github p{
+  margin: auto;
+}

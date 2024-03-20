@@ -109,10 +109,10 @@ import utils from "./utils"
     }
   }
 
-export default    {   
+export default {   
       getFromBackend,
       postToBackend,
       postLogin,
       postSignUp,
       putToBackend,
-    }  
+}  

@@ -2,13 +2,27 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  --black: #000000;
+  --blue:#14213f;
+  --yellow:#FCA311;
+  --gray:#E5E5E5;
+  --dark-gray: #262830;
+  --white:#FFFFFF;
+}
+
+.shippori-mincho-regular {
+  font-family: "Shippori Mincho", serif;
+  font-weight: 400;
+  font-style: normal;
 }
 
 html, body, #root{
   height: 100%;
+  background-color: rgb(21, 18, 34);
+  color: white;
+  font-family:"Shippori Moincho", serif;
 }
 
 li, a{
   text-decoration: none;
 }
-

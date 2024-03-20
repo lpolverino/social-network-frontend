@@ -1,0 +1,65 @@
+@import "../../index.css";
+
+.signUp{
+  display: flex;
+  flex-direction: column;
+  background-color: var(--dark-gray);
+  border-radius: 15px;
+  padding: 3rem;
+  margin: 0 auto;
+  width: 50%;
+  min-height: 560px;
+}
+
+.form{
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 32px;
+  min-width: 80%;
+  height: 100%;
+}
+
+.input{
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.input label{
+  font-weight: 600;
+  transition: color 0.1s ease-in;
+}
+
+.input input{
+  outline: none;
+  color: var(--white);
+  background-color: inherit;
+  border: none;
+  border-bottom: 1px solid var(--white);
+  font-size: 1.2em;
+  font-family: "Shippori Mincho";
+  padding-bottom: 2px;
+}
+
+.input:focus-within{
+  color: var(--yellow)
+}
+
+.signUpButton {
+  margin: 0 auto;
+  margin-top: auto;
+  padding: 10px;
+  border: none;
+  border-radius: 15px;
+  opacity: 0.9;
+  cursor: pointer;  
+  background-color: var(--yellow);
+  transition: transform 0.5s ease-in-out;
+  width: 80%;
+}
+
+.signUpButton:hover{
+  transform: scale(1.1);
+}
